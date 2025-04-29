@@ -1,0 +1,46 @@
+.body{
+    background-color: #E3E7E8;
+    font-family: system-ui;
+    
+}
+.container{
+    margin-top: 30px;
+    width: 1000px;
+    margin: auto;
+    transition: 0.5s;
+}
+.container .row{
+    margin-top: 40px;
+}
+header{
+    position: sticky;
+    display: grid;
+    grid-template-columns: 2fr -90px;
+    padding: 10px;
+    background-color: #94bbe7;
+}
+header .shopping{
+    position: relative;
+
+    text-align: center;
+}
+header .shopping img{
+    width: 40px;
+}
+header .shopping span{
+    background: red;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    position: absolute;
+    top: -5px;
+    left: 80%;
+    padding: 3px 10px;
+}
+
+nav {
+    font-size: 20px;
+    color: black;
+}
