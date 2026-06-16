@@ -1,0 +1,306 @@
+@import url("https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap");
+
+/* start: Global */
+:root {
+    --font-onest: "Onest", sans-serif;
+    --text-xs: 12px;
+    --text-sm: 14px;
+    --text-base: 16px;
+    --text-lg: 18px;
+    --text-xl: 20px;
+    --text-2xl: 24px;
+    --text-3xl: 30px;
+    --text-4xl: 36px;
+    --text-5xl: 48px;
+    --rounded-sm: 2px;
+    --rounded-md: 4px;
+    --rounded-lg: 8px;
+    --rounded-xl: 16px;
+    --rounded-full: 999px;
+    --white: #fff;
+    --black: #000;
+    --primary: #6c48b5;
+    --gray: #eee;
+    --duration-150: 150ms;
+    --shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+*,
+::before,
+::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: var(--font-onest);
+    color: var(--black);
+}
+button,
+input {
+    font-family: inherit;
+}
+.container {
+    max-width: 1530px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+/* start: Global */
+
+/* start: Tab */
+.tab-section {
+
+    min-height: 100vh;
+    padding: 48px 0;
+    margin-top: 90vh;
+}
+.tab-pane {
+    display: flex;
+    overflow-x: auto;
+}
+.tab-pane-item {
+    height: 72px;
+    background-color: var(--primary);
+    padding: 0 24px;
+    border: none;
+    border-radius: var(--rounded-xl) var(--rounded-xl) 0 0;
+    color: var(--white);
+    text-align: left;
+    width: 140px;
+    flex-shrink: 0;
+    margin-right: 16px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    outline: none;
+    /* transition-property: color;
+    transition-duration: var(--duration-150);
+    transition-delay: var(--delay); */
+}
+.tab-pane-item.active {
+    color: var(--primary);
+}
+.tab-pane-item::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 300%;
+    height: 100%;
+    background-image: linear-gradient(
+        to right,
+        var(--primary) calc(100% / 3),
+        var(--white) calc(100% / 3),
+        var(--white) calc((100% / 3) * 2),
+        var(--primary) calc((100% / 3) * 2)
+    );
+    z-index: -1;
+    transition-property: left;
+    transition-duration: var(--duration-150);
+    transition-timing-function: linear;
+    transition-delay: var(--delay);
+    pointer-events: none;
+}
+.tab-pane-item.slow::after {
+    transition-duration: calc(var(--duration-150) * 2);
+}
+.tab-pane-item.active::after {
+    left: -100%;
+}
+.tab-pane-item.after::after {
+    left: -200%;
+}
+.tab-pane-item.before::after {
+    left: 0;
+}
+.tab-pane-item::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -4px;
+    width: 4px;
+    height: 32px;
+    transform: translateY(-50%);
+    background-color: var(--primary);
+    border-radius: var(--rounded-full);
+    transition-property: left;
+    transition-duration: var(--duration-150);
+    transition-delay: calc(var(--delay) + var(--duration-150));
+}
+.tab-pane-item.active::before {
+    left: 0;
+}
+.tab-pane-item:last-child {
+    margin-right: 0;
+}
+.tab-pane-item-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    line-height: 1.2;
+    display: block;
+    margin-bottom: 4px;
+}
+.tab-page {
+    background-color: var(--white);
+    box-shadow: var(--shadow);
+    position: relative;
+    padding: 24px;
+    border-radius: 0 0 var(--rounded-xl) var(--rounded-xl);
+    display: none;
+}
+.tab-page.active {
+    display: block;
+}
+.tab-page-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 12px;
+}
+.tab-page-text {
+    font-size: var(--text-base);
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+.tab-page-image {
+    display: block;
+    width: 100%;
+    max-height: 300px;
+    object-fit: contain;
+    background-color: #f9f9f9;
+    border: 1px solid var(--gray);
+    border-radius: var(--rounded-lg);
+    margin-bottom: 24px;
+}
+/* end: Tab */
+.card {
+    width: 100%; /* Lebar penuh dalam col-md */
+    min-height: 400px; /* Tinggi card lebih seragam */
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Agar konten tetap rapi */
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px; /* Kurangi padding agar lebih compact */
+}
+
+.card-img-top {
+    width: 100%;
+    height: 250px; /* Pastikan tinggi seragam */
+    object-fit: contain; /* Gambar tidak terpotong */
+    border-radius: 10px 10px 0 0;
+    background-color: white; /* Tambahkan background putih jika gambar tidak penuh */
+}
+
+.card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.card-title {
+    font-size: 2rem; /* Ukuran default */
+    font-weight: bold;
+    white-space: nowrap; /* Hindari multi-baris */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #d9534f;
+}
+
+.btn-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn {
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+.cart-badge {
+    position: absolute;
+    top: 0;
+    right: 50px; /* Menyesuaikan posisi agar lebih dekat ke ikon */
+    transform: translate(50%, -50%);
+    background-color: #dc3545; /* Warna merah */
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 50%;
+    display: none; /* Default disembunyikan jika 0 */
+    min-width: 20px; /* Ukuran minimal */
+    text-align: center;
+}
+/* NAVBAR */
+
+/* MAIN HEAD */
+.header__container {
+    display: grid;
+    gap: 2px;
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+  
+  .header__image img {
+    max-width: 600px;
+    margin-inline: auto;
+    position: absolute;
+    top: 55%;
+    transform: translate(0, -50%);
+  }
+  
+  .header__content h2 {
+    max-width: 500px;
+    margin-inline: auto;
+    margin-bottom: 2rem;
+    padding: 1rem 2rem;
+    font-size: 1.61rem;
+    font-weight: 400;
+    font-family: var(--header-font-2);
+    color: #fff;
+    border: 2px dashed #fff;
+    text-align: center;
+  }
+  
+  .header__content {
+    padding: 0 2rem;
+  }
+  
+  .header__content h1 {
+    font-size: 6rem;
+    font-weight: 900;
+    font-family: "poppins", sans-serif;
+    /* font-family: var(--header-font-2); */
+    color: #ffffff;
+    line-height: 4rem;
+    text-align: center;
+    text-shadow: 5px 5px rgb(7, 22, 78);
+    /* letter-spacing: 4px; */
+  }
+  
+  .header__content h1 span {
+    font-size: 3rem;
+  }
+/* MAIN HEAD */
+
+
+
+
+
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1.5rem; /* Kecilkan font jika layar lebih kecil */
+    }
+}

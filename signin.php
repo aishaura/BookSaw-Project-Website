@@ -1,5 +1,5 @@
 <?php
-require_once "connection.php"; // Pastikan koneksi database benar
+require_once "includes/connection.php"; // Pastikan koneksi database benar
 session_start(); // Mulai sesi untuk menyimpan data user
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -25,47 +25,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_login'])) {
-    // Pastikan koneksi database tersedia
-    if (!$conn) {
-        die("Koneksi database gagal: " . mysqli_connect_error());
-    }
-
     // Ambil data dari form
-    $username = mysqli_real_escape_string($conn, trim($_POST['username']));
+    $username = trim($_POST['username']);
     $password = $_POST['password']; // Password akan diverifikasi menggunakan password_verify()
 
-    // Query untuk mendapatkan user berdasarkan username
-    $sql = "SELECT * FROM pembeli WHERE username = ?";
-    $stmt = mysqli_prepare($conn, $sql);
+    // Query untuk mendapatkan user berdasarkan username dari Supabase
+    $endpoint = 'pembeli?username=eq.' . rawurlencode($username) . '&select=*';
+    $users = fetch_supabase_data($endpoint);
 
-    if ($stmt) {
-        // Bind parameter dan eksekusi query
-        mysqli_stmt_bind_param($stmt, "s", $username);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+    if (!empty($users) && is_array($users) && count($users) > 0) {
+        $user = $users[0];
 
-        if ($result && mysqli_num_rows($result) > 0) {
-            $user = mysqli_fetch_assoc($result);
+        // Verifikasi password
+        if (password_verify($password, $user['password'])) {
+            // Jika login berhasil, simpan data user ke session
+            $_SESSION['username'] = $user['username']; // Simpan username ke session
+            $_SESSION['user_id'] = $user['id'];  // Simpan user_id ke session (jika diperlukan)
 
-            // Verifikasi password
-            if (password_verify($password, $user['password'])) {
-                // Jika login berhasil, simpan data user ke session
-                $_SESSION['username'] = $user['username']; // Simpan username ke session
-                $_SESSION['user_id'] = $user['id'];  // Simpan user_id ke session (jika diperlukan)
-
-                // Redirect ke halaman utama setelah login berhasil
-                header("Location: user.php");
-                exit();
-            } else {
-                // Jika password salah
-                $error_message = "Password salah!";
-            }
+            // Redirect ke halaman utama setelah login berhasil
+            header("Location: user.php");
+            exit();
         } else {
-            // Jika username tidak ditemukan
-            $error_message = "Username tidak ditemukan!";
+            // Jika password salah
+            $error_message = "Password salah!";
         }
     } else {
-        $error_message = "Kesalahan pada query database.";
+        // Jika username tidak ditemukan
+        $error_message = "Username tidak ditemukan!";
     }
 }
 ?>
@@ -76,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_login'])) {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="login.css" />
+    <link rel="stylesheet" href="assets/css/login.css" />
     <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -176,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_login'])) {
     <?php endif; ?>
     
     <!--  -->
-    <script src="scriptlogin.js"></script>
+    <script src="assets/js/scriptlogin.js"></script>
 </body>
 </html>
 

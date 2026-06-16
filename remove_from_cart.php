@@ -8,6 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         unset($_SESSION['cart'][$id]);
     }
 
-    header('Location: cartcoba.php');
+    header('Location: cart.php');
     exit;
 }

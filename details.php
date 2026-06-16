@@ -179,11 +179,13 @@
 <div class="container">
     <div class="book-container row">
         <?php
-        include_once 'connection.php';
+        include_once 'includes/connection.php';
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
-            $result = mysqli_query($conn, "SELECT * FROM buku WHERE id='$id'");
-            if ($row = mysqli_fetch_array($result)) {
+            $endpoint = 'buku?id=eq.' . rawurlencode($id) . '&select=*';
+            $books = fetch_supabase_data($endpoint);
+            if (!empty($books) && is_array($books) && count($books) > 0) {
+                $row = $books[0];
         ?>
                 <div class="col-md-4">
                     <img src="<?php echo $row['gambar']; ?>" class="img-fluid book-cover" alt="Book Cover">

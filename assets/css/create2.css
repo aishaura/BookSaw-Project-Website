@@ -1,0 +1,213 @@
+/* Importing Google Fonts - Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+.container {
+  max-width: 1200px;
+  width: 100%;
+  height: 780px;
+  background-color: #fff;
+  padding: 25px 30px;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+.container .title {
+  font-size: 25px;
+  font-weight: 500;
+  position: relative;
+}
+.container .title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 70px;
+  height: 5px;
+  width: 300px;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+}
+.form-group {
+    margin-bottom: 15px;
+
+}
+.form-group label {
+    font-weight: 500;
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+
+}
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: 0.3s;
+}
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #5a67d8;
+    outline: none;
+}
+
+/* Upload File */
+
+
+.container form .user-details {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px 0 12px 0;
+  }
+  form .user-details .form-group {
+    margin-bottom: 15px;
+    width: calc(100% / 2 - 20px);
+  }
+
+/* Submit & Cancel Buttons */
+.btn-container {
+    display: flex;
+    gap: 10px;
+}
+.btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    color: white;
+}
+.btn-primary:hover {
+    background: linear-gradient(-135deg, #71b7e6, #9b59b6);
+}
+.btn-default {
+    background: transparent;
+    border: 2px solid gray;
+    color: gray;
+    
+}
+form a{
+    text-decoration: none;
+}
+.btn-default:hover {
+    background: black;
+    color: white;
+    border-color: black;
+}
+
+
+/* Pastikan seluruh elemen di bawah ini memenuhi container */
+.form-group input[name="sinopsis"] {
+    width: 100%;
+}
+
+/* Atur tombol dalam satu kolom (stacked layout) */
+.btn-container {
+    display: flex;
+    flex-direction: column; /* Susun tombol secara vertikal */
+    gap: 10px;
+    width: 100%;
+}
+.btn-container label {
+    font-weight: 500;
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+.btn-container input {
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+.btn-container input:focus {
+    border-color: #5a67d8;
+    outline: none;
+}
+
+/* Buat tombol Submit dan Cancel memenuhi lebar container */
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+    text-align: center;
+}
+
+/* Warna tombol */
+.btn-primary {
+    background: linear-gradient(135deg, #71b7e6, #9b59b6);
+    color: white;
+}
+.btn-primary:hover {
+    background: linear-gradient(-135deg, #71b7e6, #9b59b6);
+}
+
+/* Tombol Cancel */
+.btn-default {
+    background: transparent;
+    border: 2px solid gray;
+    color: gray;
+}
+.btn-default:hover {
+    background: black;
+    color: white;
+    border-color: black;
+}
+
+
+
+
+/* Responsive media query code for mobile devices */
+@media(max-width: 584px) {
+  .container {
+    max-width: 100%;
+  }
+  form .user-details .input-box {
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  form .category {
+    width: 100%;
+  }
+  .content form .user-details {
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+  .user-details::-webkit-scrollbar {
+    width: 5px;
+  }
+}
+/* Responsive media query code for mobile devices */
+@media(max-width: 459px) {
+  .container .content .category {
+    flex-direction: column;
+  }
+}

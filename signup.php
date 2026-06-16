@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'connection.php'; // Memanggil koneksi database
+include_once 'includes/connection.php'; // Memanggil koneksi database
 
 $login_error = false; // Tambahkan variabel untuk menyimpan status login error
 
@@ -27,24 +27,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save'])) {
-    $conn = mysqli_connect('localhost', 'root', '', 'login_systems') or die("Koneksi gagal: " . mysqli_connect_error());
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $username = trim($_POST['username']);
     $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 
-    $exists = mysqli_query($conn, "SELECT 1 FROM pembeli WHERE username = '$username'");
-    if (mysqli_num_rows($exists)) {
+    // Cek apakah username sudah ada di Supabase
+    $endpoint = 'pembeli?username=eq.' . rawurlencode($username) . '&select=id';
+    $exists = fetch_supabase_data($endpoint);
+
+    if (!empty($exists) && is_array($exists) && count($exists) > 0) {
         $signup_error = "Username sudah terdaftar.";
-    } elseif (mysqli_query($conn, "INSERT INTO pembeli (username, password) VALUES ('$username', '$password')")) {
-        header("Location: signin.php?message=success");
-        // Redirect ke halaman dashboard
-        header("Location: signin.php");
-        exit;
-
     } else {
-        $signup_error = "Gagal menyimpan data.";
-    }
+        // Simpan data baru ke Supabase
+        $insert_data = [
+            'username' => $username,
+            'password' => $password
+        ];
+        $res = supabase_request('pembeli', 'POST', $insert_data);
 
-    mysqli_close($conn);
+        if ($res && !isset($res['error'])) {
+            header("Location: signin.php");
+            exit;
+        } else {
+            $signup_error = "Gagal menyimpan data.";
+        }
+    }
 }
 
 
@@ -55,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save'])) {
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="login.css" />
+    <link rel="stylesheet" href="assets/css/login.css" />
     <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -145,6 +151,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save'])) {
     </div>
 
     <!--  -->
-    <script src="scriptlogin.js"></script>
+    <script src="assets/js/scriptlogin.js"></script>
 </body>
 </html>

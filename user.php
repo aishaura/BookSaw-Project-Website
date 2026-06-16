@@ -23,7 +23,7 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="user.css" />
+    <link rel="stylesheet" href="assets/css/user.css" />
     <style>
         body {
             background:rgb(241, 236, 246);
@@ -142,7 +142,7 @@ header {
     width: 100%;
     height: 100vh;
     background-image: 
-      url("papa.svg");
+      url("assets/images/papa.svg");
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -225,7 +225,7 @@ header {
         <!-- Kanan: Cart, Logout, Profil -->
         <div class="nav-right">
             <!-- Cart -->
-            <a href="cartcoba.php" class="btn d-flex align-items-center position-relative" style="color: white;">
+            <a href="cart.php" class="btn d-flex align-items-center position-relative" style="color: white;">
                 <i class="fa-solid fa-cart-shopping me-2" style="font-size: 27px;"></i>
                 <span class="cart-badge badge rounded-pill" id="cart-count">0</span>
             </a>
@@ -276,15 +276,15 @@ header {
         </div>
 
         <?php
-        include_once 'connection.php';
+        include_once 'includes/connection.php';
 
-        function getBooksByCategory($conn, $category = null) {
+        function getBooksByCategory($category = null) {
             if ($category) {
-                $query = "SELECT * FROM buku WHERE kategori = '$category'";
+                $endpoint = 'buku?kategori=eq.' . rawurlencode($category) . '&select=*&order=id.asc';
             } else {
-                $query = "SELECT * FROM buku";
+                $endpoint = 'buku?select=*&order=id.asc';
             }
-            return mysqli_query($conn, $query);
+            return fetch_supabase_data($endpoint);
         }
 
         $categories = [
@@ -296,12 +296,12 @@ header {
         ];
 
         foreach ($categories as $tab => $category) {
-            $books = getBooksByCategory($conn, $category);
+            $books = getBooksByCategory($category);
             echo '<div class="tab-page ' . ($tab === "all" ? "active" : "") . '" data-tab-page="' . $tab . '">';
             
-            if (mysqli_num_rows($books) > 0) {
+            if (!empty($books) && is_array($books)) {
                 echo '<div class="row">';
-                while ($row = mysqli_fetch_array($books)) {
+                foreach ($books as $row) {
                     ?>
                     <div class="col-md-2 mb-4">
                         <div class="card">
@@ -322,14 +322,11 @@ header {
                             </div>
                         </div>
                     </div>
-
-
-
                     <?php
                 }
                 echo '</div>';
             } else {
-                echo '<p class="text-center">Tidak ada buku dalam kategori ini.</p>';
+                echo '<p class="text-center text-muted">Tidak ada buku dalam kategori ini.</p>';
             }
             echo '</div>';
         }
@@ -382,7 +379,7 @@ header {
 
         <!-- end: Tab -->
 
-        <script src="user.js"></script>
+        <script src="assets/js/user.js"></script>
 
 
 <script>document.getElementById('searchInput').addEventListener('input', function () {

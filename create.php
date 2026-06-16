@@ -1,16 +1,16 @@
 <?php
-require_once "connection.php";
+require_once "includes/connection.php";
 
 if(isset($_POST['save']))
 {    
-    $id = $_POST['id'];
+    $id = (int)$_POST['id'];
     $judul_buku = $_POST['judul_buku'];
     $pengarang = $_POST['pengarang'];
     $kategori = $_POST['kategori'];
     $sinopsis = $_POST['sinopsis'];
-    $harga = $_POST['harga'];
-    $stok_tersedia = $_POST['stok_tersedia'];
-    $id_admin = $_POST['id_admin'];
+    $harga = (int)$_POST['harga'];
+    $stok_tersedia = (int)$_POST['stok_tersedia'];
+    $id_admin = (int)$_POST['id_admin'];
 
     // Periksa apakah file gambar diunggah
     if (!isset($_FILES["gambar"]) || $_FILES["gambar"]["error"] != 0) {
@@ -31,12 +31,6 @@ if(isset($_POST['save']))
         $uploadOk = 0;
     }
 
-    // Periksa apakah file sudah ada
-    if (file_exists($target_file)) {
-        echo "Maaf, file sudah ada.";
-        $uploadOk = 0;
-    }
-
     // Batasi ukuran file (maksimal 2MB)
     if ($_FILES["gambar"]["size"] > 2000000) {
         echo "Maaf, ukuran file terlalu besar.";
@@ -52,57 +46,62 @@ if(isset($_POST['save']))
     // Jika tidak ada error, simpan file
     if ($uploadOk == 1) {
         if (move_uploaded_file($_FILES["gambar"]["tmp_name"], $target_file)) {
-            // Simpan ke database
-            $sql = "INSERT INTO buku (id, gambar, judul_buku, pengarang, kategori, sinopsis, harga, stok_tersedia, id_admin) 
-                    VALUES ('$id', '$target_file', '$judul_buku','$pengarang','$kategori','$sinopsis','$harga','$stok_tersedia','$id_admin')";
+            // Data untuk di-insert ke Supabase
+            $insert_data = [
+                'id' => $id,
+                'judul_buku' => $judul_buku,
+                'pengarang' => $pengarang,
+                'kategori' => $kategori,
+                'sinopsis' => $sinopsis,
+                'harga' => $harga,
+                'stok_tersedia' => $stok_tersedia,
+                'id_admin' => $id_admin,
+                'gambar' => $target_file
+            ];
             
-            if (mysqli_query($conn, $sql)) {
-                header("location: index.php");
+            $res = supabase_request('buku', 'POST', $insert_data);
+            
+            if ($res && !isset($res['error'])) {
+                header("location: admin.php");
                 exit();
             } else {
-                echo "Error: " . mysqli_error($conn);
+                echo "Error inserting record in Supabase: " . json_encode($res);
             }
         } else {
             echo "Maaf, terjadi kesalahan saat mengunggah file.";
         }
     }
-
-    mysqli_close($conn);
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <title>Create New Books Catalog</title>
-    <?php include "head.php"; ?>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Create New Books Catalog</title>
+  <link rel="stylesheet" href="assets/css/create2.css">
 </head>
 <body>
- 
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="page-header">
-                        <h2>Create Record</h2>
-                    </div>
-                    <p>Please fill this form and submit to add books record to the catalog.</p>
-                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" enctype="multipart/form-data">
+  <div class="container">
+    <!-- Title section -->
+    <div class="title">Upload Buku Baru<br>
+    <p style="font-size: 18px; font-weight: 300">Silakan isi formulir ini dan kirim untuk menambahkan catatan buku ke katalog.</p>
+    </div>
+    
+                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post" enctype="multipart/form-data">
+                    <div class="user-details">
                         <div class="form-group">
                             <label>Id</label>
-                            <input type="text" name="id" class="form-control" value="" maxlength="" required="">
+                            <input type="text" name="id" class="form-control" placeholder="masukkan id buku" value="" maxlength="" required="">
                         </div>
-                        <div class="form-group">
-                            <label for="gambar">Image</label>
-                            <input name="gambar" type="file" class="form-control" required>
-
-                        </div>
+                        
                         <div class="form-group ">
                             <label >Judul buku</label>
-                            <input type="text" name="judul_buku" class="form-control" value="" maxlength="" required="">
+                            <input type="text" name="judul_buku" class="form-control" placeholder="judul buku" value="" maxlength="" required="">
                         </div>
                         <div class="form-group">
                             <label>Pengarang</label>
-                            <input type="text" name="pengarang" class="form-control" value="" maxlength="" required="">
+                            <input type="text" name="pengarang" class="form-control" placeholder="pengarang" value="" maxlength="" required="">
                         </div>
                         <div class="form-group">
                             <label>Kategori</label>
@@ -112,36 +111,34 @@ if(isset($_POST['save']))
                                 <option value="fantasy">Fantasy</option>
                                 <option value="romance">Romance</option>
                                 <option value="comedy">Comedy</option>
-                                
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Sinopsis</label>
-                            <input type="text" name="sinopsis" class="form-control" value="" maxlength="" required="">
-                        </div>
-                        <div class="form-group">
                             <label>Harga</label>
-                            <input type="text" name="harga" class="form-control" value="" maxlength="12" required="">
+                            <input type="text" name="harga" class="form-control" value="" placeholder="masukkan harga buku" maxlength="12" required="">
                         </div>
                         <div class="form-group">
                             <label>Stok tersedia</label>
-                            <input type="text" name="stok_tersedia" class="form-control" value="" maxlength="12" required="">
+                            <input type="text" name="stok_tersedia" class="form-control" value="" placeholder="masukkan stok tersedia" maxlength="12" required="">
                         </div>
                         <div class="form-group">
                             <label>Id Admin</label>
-                            <input type="text" name="id_admin" class="form-control" value="" maxlength="12" required="">
+                            <input type="text" name="id_admin" class="form-control" value="" placeholder="masukkan id admin" maxlength="12" required="">
                         </div>
-
-                        <input type="submit" class="btn btn-primary" name="save" value="submit">
-                        <a href="index.php" class="btn btn-default">Cancel</a>
-                    </form>
-                </div>
-
-            </div> 
-               
-        </div>
-
-        
-
+                        <div class="form-group">
+                            <label for="gambar">Image</label>
+                            <input name="gambar" type="file" class="form-control" required>
+                        </div>
+                        <!-- Tombol Submit -->
+                        <div class="btn-container">
+                        <label>Sinopsis</label>
+                            <input type="text" name="sinopsis" class="form-control" value="" placeholder="tulis sinopsis" maxlength="" required="">
+                        
+                            <input type="submit" class="btn btn-primary" name="save" value="Submit">
+                            <a href="admin.php" class="btn btn-default">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+  </div>
 </body>
 </html>

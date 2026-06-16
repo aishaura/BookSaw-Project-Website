@@ -1,18 +1,14 @@
 <?php
 session_start();
-include_once 'connection.php';
-$result = mysqli_query($conn, "SELECT * FROM buku");
-$totalBuku = mysqli_num_rows($result);
-// Koneksi ke database login_systems2
-$conn2 = mysqli_connect("localhost", "root", "", "login_systems");
-if (!$conn2) {
-    die("Koneksi ke database login_systems gagal: " . mysqli_connect_error());
-}
+include_once 'includes/connection.php';
 
-// Query untuk menghitung jumlah user yang pernah login
-$resultVisitors = mysqli_query($conn2, "SELECT COUNT(*) AS total_visitors FROM pembeli");
-$rowVisitors = mysqli_fetch_assoc($resultVisitors);
-$totalVisitors = $rowVisitors['total_visitors']; // Jumlah pengguna yang pernah login
+// Ambil data buku dari Supabase
+$buku_list = fetch_supabase_data('buku?select=*&order=id.asc');
+$totalBuku = is_array($buku_list) ? count($buku_list) : 0;
+
+// Ambil data pengguna terdaftar dari Supabase
+$pembeli_list = fetch_supabase_data('pembeli?select=id');
+$totalVisitors = is_array($pembeli_list) ? count($pembeli_list) : 0;
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +20,7 @@ $totalVisitors = $rowVisitors['total_visitors']; // Jumlah pengguna yang pernah 
 	<!-- Boxicons -->
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<!-- My CSS -->
-	<link rel="stylesheet" href="admin.css">
+	<link rel="stylesheet" href="assets/css/admin.css">
 
 	<title>Dashboard Admin - BOOKSAW</title>
 
@@ -156,7 +152,7 @@ p {
 				</a>
 			</li>
 			<li>
-				<a href="data_keranjang2.php" id="data-keranjang">
+				<a href="data_keranjang.php" id="data-keranjang">
 					<i class='bx bxs-shopping-bag-alt' ></i>
 					<span class="text">Data Pembelian Pengguna</span>
 				</a>
@@ -164,7 +160,7 @@ p {
 			
 			
 			<li>
-				<a href="data_user2.php" id="data-login">
+				<a href="data_user.php" id="data-login">
 					<i class='bx bxs-group' ></i>
 					<span class="text">Data Pengguna Terdaftar</span>
 				</a>
@@ -202,7 +198,7 @@ p {
 				<span class="num">8</span>
 			</a>
 			<a href="#" class="profile">
-				<img src="3d.jpg">
+				<img src="assets/images/3d.jpg">
 			</a>
 		</nav>
 		<!-- NAVBAR -->
@@ -238,7 +234,7 @@ p {
         </div>
 
 		<!-- Gambar di sebelah kanan -->
-		<img src="admin222.png" alt="Admin Image" class="admin-image">
+		<img src="assets/images/admin222.png" alt="Admin Image" class="admin-image">
     </div>
 
     <script>
@@ -315,10 +311,10 @@ p {
                 </div>
             </div>
 			
-            <a href="create2.php"><i class='bx bx-plus' style="font-size: 27px; color: black; margin-right:20px;"></i></a>
+            <a href="create.php"><i class='bx bx-plus' style="font-size: 27px; color: black; margin-right:20px;"></i></a>
 					</div>
 
-					<?php if (mysqli_num_rows($result) > 0) { ?>
+					<?php if (!empty($buku_list) && is_array($buku_list)) { ?>
 						<table>
 							<thead>
 								<tr>
@@ -335,7 +331,7 @@ p {
 								</tr>
 							</thead>
 							<tbody>
-								<?php while($row = mysqli_fetch_array($result)) { ?>
+								<?php foreach ($buku_list as $row) { ?>
 									<tr>
 										<td><?php echo $row["id"]; ?></td>
 										<td><img src="<?php echo $row["gambar"]; ?>" style="width: 50px;"></td>
@@ -352,7 +348,7 @@ p {
 										<td><?php echo $row["stok_tersedia"]; ?></td>
 										<td><?php echo $row["id_admin"]; ?></td>
 										<td>
-											<a href="update2.php?id=<?php echo $row["id"]; ?>" title='Update Record'><i class='bx bx-edit' style="font-size: 27px; text-decoration:none;"></i></a>
+											<a href="update.php?id=<?php echo $row["id"]; ?>" title='Update Record'><i class='bx bx-edit' style="font-size: 27px; text-decoration:none;"></i></a>
 											<a href="delete.php?id=<?php echo $row["id"]; ?>" title='Delete Record' onclick="return confirm('Apakah Anda yakin ingin menghapus buku ini?');"><i class='bx bx-trash' style="font-size: 27px"></i></a>
 										</td>
 									</tr>
@@ -431,6 +427,6 @@ document.getElementById('searchInput').addEventListener('input', function () {
 </script>
 
 
-	<script src="admin.js"></script>
+	<script src="assets/js/admin.js"></script>
 </body>
 </html>
